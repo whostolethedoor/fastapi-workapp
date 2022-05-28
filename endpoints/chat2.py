@@ -1,21 +1,3 @@
-from fastapi import FastAPI
-from db.base import database
-from endpoints import users, auth, jobs
-import uvicorn
-from endpoints.chat2 import app as rot
-# from endpoints.chat import routes, broadcast
-# from starlette.applications import Starlette
-
-app = FastAPI(title="Employment exchange")
-app.include_router(users.router, prefix="/users", tags=["users"])
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(jobs.router, prefix="/jobs", tags=["jobs"])
-# app.include_router(rot, prefix="", tags=["chat"])
-
-# app = Starlette(
-    # routes=routes, on_startup=[broadcast.connect], on_shutdown=[broadcast.disconnect],
-# )
-
 import logging
 import json
 from collections import defaultdict
@@ -28,7 +10,7 @@ from starlette.websockets import WebSocketDisconnect
 from starlette.middleware.cors import CORSMiddleware
 
 
-# app = FastAPI()
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -102,6 +84,7 @@ async def get(request: Request, room_name, user_name):
         "chat_room.html",
         {"request": request, "room_name": room_name, "user_name": user_name},
     )
+    pass
 
 
 @app.websocket("/ws/{room_name}")
@@ -127,32 +110,3 @@ async def websocket_endpoint(
             await notifier._notify(f"{data}", room_name)
     except WebSocketDisconnect:
         notifier.remove(websocket, room_name)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@app.on_event("startup")
-async def startup():
-    await database.connect()
-
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
-
-# app.add_api_websocket_route(endpoint=rot, path='')
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", port=8001, host="0.0.0.0", reload=True)

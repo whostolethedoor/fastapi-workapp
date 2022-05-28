@@ -10,3 +10,18 @@ services:
       POSTGRES_USER:  root
       POSTGRES_PASSWORD:  root
       POSTGRES_DB: employment_exchange
+  
+#   workapp:
+#     build: .
+#     container_name: workapp-app
+#     network_mode: host
+#     ports:
+#       - "8000:8000"
+#     command: bash -c "uvicorn main:app --reload"
+#     env_file:
+#       - .env_dev
+#     depends_on:
+#       - db
+
+# volumes:
+#   postgres_data:
